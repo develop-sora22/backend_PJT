@@ -138,9 +138,35 @@ Kafka broker는 카프카가 설치되어 있는 서버 단위를 말한다.
 
 replication은 partition의 복제를 뜻한다.
 
-만약 replication이 1이라면  partition은 1개만 존재한다는 것이고 replication이 2라면 partition은 원본 1개와 복제본 1개로 총 2개가 존재한다.
 
-만약 replication이 3이라면 partition은 원본 1개 복제복 2개로 총 3개가 존재한다.
+
+만약 replication이 1이라면  partition은 1개만 존재한다는 것이고 replication이 2라면 partition은 원본 1개와 복제본 1개로 총 2개가 존재한다.
+만약 replication이 3이라면 partition은 원본 1개 복제복 2개로 총 3개가 존재하게 된다.
+
+![Kafka23](Apache_Kafka.assets/23.png)다만 브로커 개수에 따라서 replication 개수가 제한되는데 브로커 개수가 3이면 replication은 브로커 개수보다 많아질 수 없다.
+
+![Kafka24](Apache_Kafka.assets/24.png)
+
+여기서 원본 1개 partition은 Leader partition이라고 부른다. 그리고 나머지 2개 복제본 partition은 Follower partition이라고 부른다.
+이 Leader, Follower partition을 합쳐서 ISR 즉, In Sync Replica 라고 볼 수 있다.
+
+
+
+#### 왜 replication을 사용하는 것인가?
+
+replication은 partition 의 고가용성을 위해 사용된다.
+
+만약 브로커가 3개인 카프카에서 replication이 1이고 partition이 1인 topic이 존재한다고 가정해보자.
+갑자기, 브로커가 어떠한 이유로 사용불가하게 되면 더이상 해당 파티션은 복구할 수 없다.
+
+만약 replication이 2면 브로커 1개가 죽더라도 복제본 즉, Follower partition이 존재하므로 복제본으로 복구가 가능하다.
+나머지 1개가 남은 Follower parttion이 Leader partition역할을 승계하게 되는 것이다.
+
+
+
+
+
+
 
 
 
