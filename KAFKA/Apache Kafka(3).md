@@ -134,7 +134,7 @@ Kafka broker는 카프카가 설치되어 있는 서버 단위를 말한다.
 
 
 
-#### Kafka replication
+### Kafka replication
 
 replication은 partition의 복제를 뜻한다.
 
@@ -160,7 +160,22 @@ replication은 partition 의 고가용성을 위해 사용된다.
 갑자기, 브로커가 어떠한 이유로 사용불가하게 되면 더이상 해당 파티션은 복구할 수 없다.
 
 만약 replication이 2면 브로커 1개가 죽더라도 복제본 즉, Follower partition이 존재하므로 복제본으로 복구가 가능하다.
-나머지 1개가 남은 Follower parttion이 Leader partition역할을 승계하게 되는 것이다.
+나머지 1개 즉, 남은 Follower parttion이 Leader partition역할을 승계하게 되는 것이다.
+
+
+
+#### Leader partition과 Follower partition의 역할
+
+프로듀서가 토픽의 partition에 **데이터를** 전달할 때 **전달받는 주체가 Leader partition**
+
+프로듀서에는 partition의 replication과 관련이 있는 ack라는 상세 옵션이 있다.
+이 ack라는 상세옵션을 통해 고가용성을 유지할 수 있는데 **0, 1, all** 옵션 3개 중 1개를 골라서 설정할 수 있다.
+
+먼저 0일 경우 프로듀서는 Leader partition에 데이터를 전송하고 응답값을 받지 않는다.
+그렇기 때문에 Leader partition에 데이터가 정상적으로 전송됐는지 그리고 나머지 partition에 정상적으로 복제되었는지 알 수 없고 보장할 수 없다.
+이 때문에 **속도는 빠르지만 데이터 유실 가능성이 있다**.
+
+
 
 
 
