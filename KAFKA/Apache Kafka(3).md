@@ -41,29 +41,32 @@
 
 ![Kafka15](Apache_Kafka.assets/15.png)
 
-부트스트랩 서버설정을 로컬 호스트의 카프카를 바라보도록 설정
+- 부트스트랩 서버설정을 로컬 호스트의 카프카를 바라보도록 설정
 
-→ 카프카 브로커의 주소목록은 되도록이면 2개 이상의 ip와 port를 설정하도록 권장한다.
-	둘 중 한개의 브로커가 비정상일 경우 다른 정상적인 브로커에 연결되어 사용 가능하기 때문이다.
-	그러므로 실제로 애플리케이션을 카프카와 연동할 때는 반드시 2개 이상의 브로커 정보를 넣는 것을 추천한다.
-
-나머지 key 와 value에 대해 스트링**시리얼라이저[^1]**로 직렬화를 설정
-
-→ 키는 메시지를 보내면, 토픽의 파티션이 지정될 때 쓰인다.
+​	→ 카프카 브로커의 주소목록은 되도록이면 2개 이상의 ip와 port를 설정하도록 권장한다.
+​		둘 중 한개의 브로커가 비정상일 경우 다른 정상적인 브로커에 연결되어 사용 가능하기 때문이다.
+​		그러므로 실제로 애플리케이션을 카프카와 연동할 때는 반드시 2개 이상의 브로커 정보를 넣는 것을 추천한다.
 
 
+
+- 나머지 key 와 value에 대해 스트링 **시리얼라이저[^1]**로 직렬화를 설정
+
+​	→ 키는 메시지를 보내면, 토픽의 파티션이 지정될 때 쓰인다.
 
  ![Kafka16](Apache_Kafka.assets/16.png)
 
-![Kafka17](Apache_Kafka.assets/17.png)
 
- 카프카 클라이언트에서 제공하는 ProducerRecord 클래스를 사용해 전송할 객체인 ProducerRecord 인스턴스를 생성할 때 어느 토픽에 넣을 것인지, 어떤 key와 value를 담을 것인지 선언할 수 있다.
 
 <br/>
 
-이번 코드는 key없이 click_log 토픽에 login이라는 value를 보낸다.
+카프카 클라이언트에서 제공하는 ProducerRecord 클래스를 사용해 전송할 객체인 ProducerRecord 인스턴스를 생성할 때 어느 토픽에 넣을 것인지, 어떤 key와 value를 담을 것인지 선언할 수 있다.
+
+이번 코드는 key없이 click_log 토픽에 login이라는 value를 보낸다.![Kafka17](Apache_Kafka.assets/17.png)
+
+<br/>
 
 만약 key를 포함하여 보내고 싶다면 빨간 상자 아래 코드와 같이 ProducerRecord 를 선언하면 된다.
+
 
 ![Kafka18](Apache_Kafka.assets/18.png)
 
@@ -77,7 +80,7 @@
 
 전송이 완료되면 close() 를 통해 프로듀서가 종료된다.
 
-
+<br/><br/>
 
 ### 프로듀서가 전송한 데이터의 흐름
 
@@ -150,7 +153,7 @@ replication은 partition의 복제를 뜻한다.
 여기서 원본 1개 partition은 Leader partition이라고 부른다. 그리고 나머지 2개 복제본 partition은 Follower partition이라고 부른다.
 **Leader, Follower partition을 합쳐서 ISR** 즉, In Sync Replica 라고 볼 수 있다.
 
-
+<br/>
 
 #### 왜 replication을 사용하는 것인가?
 
@@ -165,7 +168,7 @@ replication은 partition 의 고가용성을 위해 사용된다.
 
 나머지 1개 즉, 남은 Follower parttion이 Leader partition역할을 승계하게 되는 것이다.
 
-
+<br/>
 
 #### Leader partition과 Follower partition의 역할
 
@@ -181,6 +184,8 @@ replication은 partition 의 고가용성을 위해 사용된다.
   그렇기 때문에 Leader partition에 데이터가 정상적으로 전송됐는지 그리고 나머지 partition에 정상적으로 복제되었는지 알 수 없고 보장할 수 없다.
   이 때문에 **속도는 빠르지만 데이터 유실 가능성이 있다**.
 
+  <br/>
+  
 - **1일 경우** Leader partition에 데이터를 전송하고 Leader partition이 데이터를 정상적으로 받았는지 응답값을 받는다.
   다만 나머지 partition에 복제되었는지는 알 수 없다.
 
@@ -189,12 +194,14 @@ replication은 partition 의 고가용성을 위해 사용된다.
   ![Kafka28](Apache_Kafka.assets/28.png)
   만약 Leader partition이 데이터를 받은 즉시 브로커가 장애가 난다면 나머지 partition에 데이터가 미처 전송되지 못한 상태이므로 이전에 ack 0 옵션과 마찬가지로 데이터 유실 가능성이 있다.
 
+  <br/>
+  
 - **all 옵션일 경우** Leader partition에 데이터를 보낸 후 **나머지 follower partition에도 데이터가 저장되는 것(복제)**을 확인하는 절차(응답값)를 거친다.
   ![Kafka29](Apache_Kafka.assets/29.png)
   ack all 옵션을 사용할 경우 데이터 유실은 없다고 봐도 된다.
   그렇지만 0, 1 옵션에 비해 확인하는 부분이 많기 때문에 속도가 현저히 느리다는 단점이 존재한다.
 
-
+<br/>
 
 #### Replication count
 
